@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="cabecera">Selección de contacto:</string>
+    <string name="registro">Registro Vacío</string>
+    <string name="seleccion">Datos contacto seleccionado:</string>
+</resources>
