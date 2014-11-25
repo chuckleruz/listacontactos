@@ -8,7 +8,10 @@ package com.academiaandroid.listacontactos;
 //by José Antonio Gázquez Rodríguez
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,19 +25,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.academiaandroid.contacto.Contacto;
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Font;
+import com.lowagie.text.FontFactory;
+import com.lowagie.text.Image;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
-
-import static android.widget.Toast.*;
+import harmony.java.awt.Color;
 
 
 /*Clase MainActivity, que hereda de la clase base Activity, que permite mostrar
 los contactos almacenados en un componente de tipo selección ListView.*/
 public class MainActivity extends Activity {
+    private static final String NOMBRE_DIRECTORIO = "";
     private ListView listContactos;
     private EditText edDatosContacto;
     private ArrayList<Contacto> datosContacto;
     private Contacto contacto,contacto2;
     private Adaptador adaptadorPersonalizado;
+    private final static String NOMBRE_DOCUMENTO = "Contactos.pdf";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,12 +79,88 @@ public class MainActivity extends Activity {
             });
         }
 
-        public void tipsAndroid()
+    public void crearPDF(View v) throws DocumentException {
+        Document documento = new Document();
+        File file = crearDirectorio(NOMBRE_DOCUMENTO);
+        FileOutputStream ficheroPdf = null;
+        try {
+            ficheroPdf = new FileOutputStream(file.getAbsolutePath());
+            PdfWriter.getInstance(documento, ficheroPdf);
+            documento.open();
+            Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.g4569_pdf);
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+            Image imagen = Image.getInstance(stream.toByteArray());
+            documento.add(imagen);
+            Font fuente = FontFactory.getFont(FontFactory.COURIER, 20, Font.BOLD, Color.BLUE);
+            documento.add(new Paragraph("Contactos telefónicos almacenados",fuente));
+            documento.add(new Paragraph("---------------------------------"));
+            documento.add(new Paragraph("Contacto 1: " + contacto.getDatos() + "| |" + contacto.getNumero() + "| |" + contacto.getTipo()));
+            documento.add(new Paragraph("Contacto 2: " + contacto2.getDatos()+ "| |" + contacto2.getNumero() + "| |" + contacto2.getTipo()));
+            Toast.makeText(this, "Los datos mostrados  en pantalla se han almacenado en el archivo " + file.getName().toString(), Toast.LENGTH_LONG).show();
+        } catch (Exception ex)
+            {
+               System.out.println("Error al crear pdf de contactos telefónicos: " + ex.getMessage());
+            }
+        finally
         {
-            makeText(this, "Tips Android Studio", LENGTH_LONG);
+            documento.close();
+        }
+    }
+
+    public File crearDirectorio(String nombreFichero){
+        File ruta = devuelveRuta();
+        File fichero = null;
+        if (ruta != null)
+        {
+            fichero = new File(ruta, nombreFichero);
+        }
+        return fichero;
+    }
+
+    public File devuelveRuta() {
+        File ruta = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            ruta = new File(
+                    Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),NOMBRE_DIRECTORIO);
+
+            if (ruta != null)
+            {
+                if (!ruta.mkdirs())
+                {
+                    if (!ruta.exists())
+                    {
+                        return null;
+                    }
+                }
+            }
+            } else {
+                        Toast.makeText(this, "La ruta indicada no existe.", Toast.LENGTH_LONG).show();
+                   }
+        return ruta;
+    }
+
+        @Override
+        public boolean onCreateOptionsMenu(Menu menu) {
+            // Inflate the menu; this adds items to the action bar if it is present.
+            getMenuInflater().inflate(R.menu.menu_main, menu);
+            return true;
         }
 
-    }
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            // Handle action bar item clicks here. The action bar will
+            // automatically handle clicks on the Home/Up button, so long
+            // as you specify a parent activity in AndroidManifest.xml.
+            int id = item.getItemId();
+
+            //noinspection SimplifiableIfStatement
+            if (id == R.id.action_settings) {
+                return true;
+            }
+            return super.onOptionsItemSelected(item);
+        }
+
     /*Clase Adaptador, que hereda de la clase base ArrayAdapter, que sobrescribe el método getView(),
     y que permite construir una vista personalizada para el componente de tipo selección ListView.*/
     class Adaptador extends ArrayAdapter {
@@ -99,27 +189,6 @@ public class MainActivity extends Activity {
 
             return(item);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 }
 

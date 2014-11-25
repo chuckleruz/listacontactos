@@ -3,4 +3,5 @@
     <string name="cabecera">Selección de contacto:</string>
     <string name="registro">Registro Vacío</string>
     <string name="seleccion">Datos contacto seleccionado:</string>
+    <string name="pdf">Crear PDF</string>
 </resources>
