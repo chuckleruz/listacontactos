@@ -1,5 +1,12 @@
 package com.academiaandroid.listacontactos;
 
+//Aplicación Android en el que utilizamos un componente de tipo selección
+//ListView para mostrar datos de contactos almacenados.
+//
+//academiaandroid.com
+//
+//by José Antonio Gázquez Rodríguez
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +17,6 @@ import java.util.TimerTask;
 
 public class SplashScreenActivity extends Activity {
 
-    // Set the duration of the splash screen
     private static final long SPLASH_SCREEN_DELAY = 3000;
 
     @Override

@@ -67,17 +67,17 @@ public class MainActivity extends Activity {
         adaptadorPersonalizado = new Adaptador(this);
         /*Se almacenan los datos de los dos objetos inicializados en el componente ListView.*/
         listContactos.setAdapter(adaptadorPersonalizado);
-            //Evento lanzado al realizar click sobre uno de los ítem de la lista.
-            listContactos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    String contactoSeleccionado = datosContacto.get(position).getDatos();
+        //Evento lanzado al realizar click sobre uno de los ítem de la lista.
+        listContactos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String contactoSeleccionado = datosContacto.get(position).getDatos();
                     /*Se asigna el contenido del ítem seleccionado al componente EditText definido.*/
-                    edDatosContacto.setText(datosContacto.get(position).getDatos());
-                    Log.d("TAG", contactoSeleccionado);
-                }
-            });
-        }
+                edDatosContacto.setText(datosContacto.get(position).getDatos());
+                Log.d("TAG", contactoSeleccionado);
+            }
+        });
+    }
 
     public void crearPDF(View v) throws DocumentException {
         Document documento = new Document();
